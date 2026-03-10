@@ -1,0 +1,5 @@
+basin_timeseries_v1p2_metForcing_obsFlow/
+commands.txt
+outputs/
+__pycache__/
+.DS_Store
