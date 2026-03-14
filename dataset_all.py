@@ -60,8 +60,8 @@ class CamelsTXT(Dataset):
         self.x_stds = x_stds
         self.y_means = y_means
         self.y_stds = y_stds
-        self.x, self.y = self._load_data()
         self.basin_count = basin_count
+        self.x, self.y = self._load_data()
 
     def __len__(self):
         return self.x.shape[0]
