@@ -1,3 +1,4 @@
+# Removed id 03448942
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -52,7 +53,7 @@ def reshape_data(x, y, seq_length, pred_length):
     return x_new, y_new
 
 class CamelsTXT(Dataset):
-    def __init__(self, split, seq_length, dates, x_means=None, x_stds=None, y_means=None, y_stds=None, basin_count=100):
+    def __init__(self, split, seq_length, dates, x_means=None, x_stds=None, y_means=None, y_stds=None, max_basins=100, use_all=True, basin_limits=None):
         self.dates = dates
         self.seq_length = seq_length
         self.split = split
@@ -60,7 +61,9 @@ class CamelsTXT(Dataset):
         self.x_stds = x_stds
         self.y_means = y_means
         self.y_stds = y_stds
-        self.basin_count = basin_count
+        self.max_basins = max_basins
+        self.basin_limits = basin_limits
+        self.use_all = use_all
         self.x, self.y = self._load_data()
 
     def __len__(self):
@@ -73,13 +76,20 @@ class CamelsTXT(Dataset):
         with open("/data/basin_ids.txt", "r") as f:
             basins = f.readlines()
         index = 0
+        metadata = pd.read_csv("/data/basin_metadata.csv", dtype={"gauge_id": str}).set_index("gauge_id")
         for basin_id in basins:
-            index += 1
-            if index % 25 == 0:
-                print(f"Index: {index}")
-            if index > self.basin_count:
-                break
             basin_id = basin_id.strip()
+            try: # Some basins don't have metadata for some reason
+                row = metadata.loc[basin_id]
+            except:
+                continue
+            if not self.use_all and self.basin_limits is not None and not (self.basin_limits[0] < row["lon"] < self.basin_limits[2] and self.basin_limits[1] < row["lat"] < self.basin_limits[3]):
+                continue
+            index += 1
+            if index % 10 == 0:
+                print(f"Index: {index}")
+            if index > self.max_basins:
+                break
             try:
                 df, area = load_forcing(basin_id)
             except:
@@ -149,11 +159,3 @@ class CamelsTXT(Dataset):
         return self.x_means, self.y_means
     def get_stds(self):
         return self.x_stds, self.y_stds
-"""
-1. Load data
-2. Use dates to see if there's past info
-3. Norm if input
-4. Reshape data
-5. Delete all bad values if train
-6. Write an unnorm function
-"""

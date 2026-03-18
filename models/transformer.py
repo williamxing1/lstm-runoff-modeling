@@ -14,8 +14,8 @@ class PositionalEmbedding(nn.Module):
         return x + embeddings
 
 class SelfAttention(nn.Module):
-    super().__init__()
     def __init__(self, config):
+        super().__init__()
         self.c_attn = nn.Linear(config.d_model, 3 * config.d_model)
         self.c_proj = nn.Linear(config.d_model, config.d_model)
         self.d_model = config.d_model

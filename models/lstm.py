@@ -42,11 +42,11 @@ class Model_Scratch(nn.Module):
         return pred
 
 class LSTM(nn.Module):
-    def __init__(self, input_size, hidden_size, layers, dropout):
+    def __init__(self, config):
         super().__init__()
-        self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size, num_layers=layers, batch_first=True)
-        self.dropout = nn.Dropout(dropout)
-        self.fc = nn.Linear(hidden_size, 1)
+        self.lstm = nn.LSTM(input_size=config.input_dim, hidden_size=config.lstm_hidden_size, num_layers=config.layers, batch_first=True)
+        self.dropout = nn.Dropout(config.dropout)
+        self.fc = nn.Linear(config.lstm_hidden_size, 1)
     def forward(self, x): # x: (B, seq_length, # of features)
         """
         out - hidden state for all timesteps: (B, seq_length, hidden_size)
