@@ -56,3 +56,6 @@ Next, we will create this chart for the various models that have been trained. T
 ![NSE CDF chart](results/nse_cdf.png)
 
 As demonstrated by the chart above, the model trained on static features with NSE loss performed the best, with the model trained on static features and intermediate features being a close second. The baseline model trained without static features and intermediate truth values and using MSE loss did not perform nearly as well as the other two models, demonstrating just how important static features are for rainfall-runoff modeling.
+
+## Acknowledgements
+Huge thanks to Qing "Henry" Yang at Stanford for mentoring me.
