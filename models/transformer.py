@@ -51,9 +51,10 @@ class Block(nn.Module):
         self.sa = SelfAttention(config)
         self.ln_2 = nn.LayerNorm(config.d_model)
         self.mlp = MLP(config)
+        self.dropout = nn.Dropout(config.transformer_dropout)
     def forward(self, x):
-        x = x + self.sa(self.ln_1(x))
-        x = x + self.mlp(self.ln_2(x))
+        x = x + self.dropout(self.sa(self.ln_1(x)))
+        x = x + self.dropout(self.mlp(self.ln_2(x)))
         return x
 
 class Transformer(nn.Module):
@@ -61,6 +62,7 @@ class Transformer(nn.Module):
         super().__init__()
         self.input_proj = nn.Linear(config.input_dim, config.d_model)
         self.pos_emb = PositionalEmbedding(config)
+        self.dropout = nn.Dropout(config.transformer_dropout)
         self.blocks = nn.ModuleList([Block(config) for _ in range(config.n_layers)])
         self.ln_f = nn.LayerNorm(config.d_model)
         self.head = nn.Linear(config.d_model, 1)
@@ -68,6 +70,7 @@ class Transformer(nn.Module):
     def forward(self, x): # x: (B, seq_length, input_dim)
         x = self.input_proj(x) # (B, seq_length, d_model)
         x = self.pos_emb(x)
+        x = self.dropout(x)
         for block in self.blocks:
             x = block(x)
         x = self.ln_f(x)

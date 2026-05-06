@@ -2,7 +2,7 @@ import pandas as pd
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import cartopy.feature as cfeature
-df = pd.read_csv("basin_metadata.csv")
+df = pd.read_csv("../data/cleaned/basin_metadata.csv")
 
 ax = plt.axes(projection=ccrs.PlateCarree())
 ax.add_feature(cfeature.COASTLINE)

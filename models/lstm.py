@@ -41,6 +41,7 @@ class Model_Scratch(nn.Module):
         pred = self.fc(self.dropout(h))
         return pred
 
+# LSTM that uses (seq_length, num_features) for only 1 prediction
 class LSTM(nn.Module):
     def __init__(self, config):
         super().__init__()
@@ -54,7 +55,26 @@ class LSTM(nn.Module):
         c_n - final cell state for all layers: (num_layers, B, hidden_size)
         h_last - final hidden state for last layer: (B, hidden_size)
         """
-        out, (h_n, c_n) = self.lstm(x)
-        h_last = h_n[-1]
-        preds = self.fc(self.dropout(h_last))
+        out, (h_n, c_n) = self.lstm(x) # h_n: (num_layers, B, hidden_size)
+        h_last = h_n[-1] # h_last: (B, hidden_size)
+        preds = self.fc(self.dropout(h_last)) # preds: (B, 1)
+        return preds
+    
+# LSTM that uses (seq_length, num_features) to make seq_length predictions. This makes the training signal stronger.
+class LSTM_NSE(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.lstm = nn.LSTM(input_size=config.input_dim, hidden_size=config.lstm_hidden_size, num_layers=config.layers, batch_first=True)
+        self.dropout = nn.Dropout(config.dropout)
+        self.fc = nn.Linear(config.lstm_hidden_size, 1)
+    def forward(self, x): # x: (B, seq_length, # of features)
+        """
+        out - hidden state for all timesteps: (B, seq_length, hidden_size)
+        h_n - final hidden state for all layers: (num_layers, B, hidden_size)
+        c_n - final cell state for all layers: (num_layers, B, hidden_size)
+        h_last - final hidden state for last layer: (B, hidden_size)
+        """
+        out, _ = self.lstm(x) # out: (B, seq_length, hidden_size)
+        out = self.dropout(out)
+        preds = self.fc(out) # out: (B, seq_length, 1)
         return preds

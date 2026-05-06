@@ -1,5 +1,9 @@
-basin_timeseries_v1p2_metForcing_obsFlow/
-commands.txt
-outputs/
 __pycache__/
 .DS_Store
+
+past_code/
+test.py
+data_code/analysis.py
+data_code/modal_save_stats.py
+data_code/save_stats.py
+data/index.json

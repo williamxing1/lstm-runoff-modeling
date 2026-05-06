@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 
-coord_path = Path("/Volumes/ml_ssd/lstm-runoff-modeling/basin_timeseries_v1p2_metForcing_obsFlow/basin_dataset_public_v1p2/basin_metadata/gauge_information.txt")
+coord_path = Path("../data/raw/gauge_information.txt")
 
 rows = []
 
@@ -28,4 +28,4 @@ df = pd.DataFrame(rows, columns=[
     "HUC", "gauge_id", "name", "lat", "lon", "drainage_area"
 ])
 
-df.to_csv("basin_metadata.csv", index=False)
+df.to_csv("../data/cleaned/basin_metadata.csv", index=False)

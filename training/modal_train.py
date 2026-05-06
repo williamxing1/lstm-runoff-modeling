@@ -1,12 +1,14 @@
+# No static features: model75
+# Static features: 
 import modal
 
 app = modal.App("lstm-runoff-modeling")
 image = (
     modal.Image.debian_slim()
     .pip_install("torch", "pandas", "numpy", "matplotlib")
-    .add_local_file("dataset_all.py", "/dataset_all.py")
-    .add_local_file("lstm.py", "/lstm.py")
-    .add_local_file("transformer.py", "/transformer.py")
+    .add_local_file("../data_code/dataset.py", "/dataset.py")
+    .add_local_file("../models/lstm.py", "/lstm.py")
+    .add_local_file("../models/transformer.py", "/transformer.py")
     .add_local_file("train.py", "/train.py")
 )
 
