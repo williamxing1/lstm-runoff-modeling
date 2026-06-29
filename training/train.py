@@ -1,6 +1,6 @@
-from dataset import CamelsTXT
-from lstm import LSTM, LSTM_NSE
-from transformer import Transformer
+from data_code.dataset import CamelsTXT
+from models.lstm import LSTM, LSTM_NSE
+from models.transformer import Transformer
 import pandas as pd
 from torch.utils.data import DataLoader
 import torch
